@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<launch>
+
+  <!-- This launch file is used to actually launch the team code, after
+    final.launch sets up the environment. -->
+
+  <!-- Argument to be filled with the team number of the appropriate team.
+    e.g. roslaunch al5d_gazebo referee red:=1 blue:=2
+    The "MATLAB" and "Python" are default values because the TA test scripts
+    are in folders named TeamMATLAB and TeamPython for the test version for
+    each language, while student code is in Team1, Team2, ... , Team20 -->
+  <arg name="red" default="MATLAB" /> %
+  <arg name="blue" default="Python" />
+
+  <!-- Launch each team's code, using a python script that locates the folder
+    on the mounted Google Drive that contains the right code, and then launches
+    it in the right language according to file extension -->
+  <node name="red_team" pkg="al5d_gazebo" type="launch_student.py" output="log" args="$(arg red) red" />
+  <node name="blue_team" pkg="al5d_gazebo" type="launch_student.py" output="log" args="$(arg blue) blue" />
+
+</launch>

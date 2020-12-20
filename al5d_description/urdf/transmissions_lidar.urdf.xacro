@@ -1,0 +1,78 @@
+<?xml version="1.0"?>
+
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+  <!-- transmissions are required by the controller manager (here: for simulation in gazebo) -->
+
+  <xacro:macro name="al5d_transmission" params="name">
+    <transmission name="${name}_trans">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="${name}">
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="${name}_motor">
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission>
+  </xacro:macro>
+
+  <xacro:al5d_transmission name="base_rotate" />
+  <xacro:al5d_transmission name="shoulder_tilt" />
+  <xacro:al5d_transmission name="elbow_tilt" />
+  <xacro:al5d_transmission name="wrist_tilt" />
+  <xacro:al5d_transmission name="wrist_rotate" />
+  <xacro:al5d_transmission name="lidar_rotate" />
+
+
+<gazebo reference="lidar">
+    <sensor type="ray" name="Lite_lidar_sensor">
+      <!-- the start point of the beam -->
+      <pose>0 0 0 0 0 0</pose> 
+      <visualize>true</visualize>
+      <update_rate>200</update_rate>
+      <ray>
+        <scan>
+          <!-- The horizontal beams -->
+          <horizontal>
+
+            <!-- The number of simulated lidar rays to generate per complete laser sweep cycle.
+            See:
+            http://sdformat.org/spec?ver=1.6&elem=sensor#horizontal_resolution-->  
+            <samples>360</samples>
+
+            <!-- Resolution is multiplied by samples to determine number of
+            simulated beams vs interpolated beams.-->
+            <resolution>1</resolution>
+            
+            <!-- Minimum angle in radians -->
+            <min_angle>-1.570796</min_angle>
+
+            <!-- Maximum angle in radians -->
+            <max_angle>1.570796</max_angle>
+          </horizontal>
+        </scan>
+        <range>
+          <!-- Minimum distance of the beam -->
+          <min>0.05</min>
+  
+          <!-- Maximum distance of the beam -->
+          <max>10</max>
+
+          <!-- Linear resolution of the beam -->
+          <resolution>0.01</resolution>
+        </range>
+        <noise>
+          <type>gaussian</type>
+          <mean>0.0</mean>
+          <stddev>0.01</stddev>
+        </noise>
+      </ray>
+      <plugin name="gazebo_ros_controller" filename="libgazebo_ros_laser.so">
+        <topicName>/scan</topicName>
+        <frameName>Lidar-lite</frameName>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+
+</robot>
